@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Simple Command Voice</title>
+  </head>
+
+  <body>
+    <ol id="output"></ol>
+    <button id="start">Click and say something!</button>
+    <button id="stop">Stop recording</button>
+    <script>
+      (() => {
+        const startBtn = document.querySelector('#start');
+        const stopBtn = document.querySelector('#stop');
+        const output = document.querySelector('#output');
+        const recognition = new webkitSpeechRecognition() || new SPeechRecognition();
+        function start() {
+          recognition.interimResults = true;
+          recognition.lang = "pt-BR";
+          recognition.continuous = true;
+          recognition.start();
+          recognition.onaudiostart = function () {
+            console.log('Audio capturing started');
+          }
+          // This event happens when you talk in the microphone
+          recognition.onresult = function (event) {
+            console.log('aqui', event)
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+              if (event.results[i].isFinal) {
+                // Here you can get the string of what you told
+                const content = event.results[i][0].transcript.trim();
+                let li = document.createElement("li");
+                li.appendChild(document.createTextNode(content));
+                output.appendChild(li);
+              }
+            }
+          };
+        };
+        function stop() {
+          recognition.stop()
+        }
+        startBtn.addEventListener('click', () => {
+          start();
+          console.log('started')
+        })
+        stopBtn.addEventListener('click', () => stop())
+      })();
+    </script>
+  </body>
+
+</html>

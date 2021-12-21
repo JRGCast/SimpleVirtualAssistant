@@ -14,7 +14,7 @@
         const startBtn = document.querySelector('#start');
         const stopBtn = document.querySelector('#stop');
         const output = document.querySelector('#output');
-        const recognition = new webkitSpeechRecognition() || new SPeechRecognition();
+        const recognition = new webkitSpeechRecognition();
         function start() {
           recognition.interimResults = true;
           recognition.lang = "pt-BR";
@@ -25,7 +25,7 @@
           }
           // This event happens when you talk in the microphone
           recognition.onresult = function (event) {
-            console.log('aqui', event)
+            console.log(event)
             for (let i = event.resultIndex; i < event.results.length; i++) {
               if (event.results[i].isFinal) {
                 // Here you can get the string of what you told
@@ -37,6 +37,12 @@
             }
           };
         };
+        recognition.onerror = function (event) {
+          console.log('Speech recognition error detected: ' + event.error);
+        }
+        recognition.onspeechend = function () {
+          console.log('Speech has stopped being detected');
+        }
         function stop() {
           recognition.stop()
         }
